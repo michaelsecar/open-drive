@@ -1,5 +1,6 @@
 import {
   Button,
+  FileInput,
   Table,
   TableBody,
   TableHead,
@@ -12,31 +13,65 @@ import CustomTableRow from "./TableRow";
 
 export default function TableCustom() {
   const [files, setFiles] = useState<FileType[]>([]);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
 
   const fetchFiles = async () => {
     const response = await fetch("http://localhost:3000/list");
     const data = await response.json();
     setFiles(data);
   };
+
+  const uploadFileToServer = async () => {
+    if (!uploadFile) {
+      alert("Seleccione un archivo");
+    }
+    const formData = new FormData();
+    formData.append("file", uploadFile!);
+    fetch("http://localhost:3000/upload", {
+      method: "POST",
+      body: formData,
+    })
+      .then(() => {
+        alert("Archivo subido correctamente");
+        fetchFiles();
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  };
+
+  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    setUploadFile(file);
+  };
+
   useEffect(() => {
     fetchFiles();
   }, []);
 
   return (
     <div className="overflow-x-auto">
+      <div className="flex gap-5 pb-5">
+        <FileInput accept="*" onChange={handleUpload} />
+        <Button onClick={uploadFileToServer}>Subir</Button>
+        <Button onClick={fetchFiles}>Actualizar</Button>
+      </div>
+
       {files.length == 0 ? (
         <div className="text-gray-300 font-light">
           No se han encontrado archivos en el sistema
-          <Button onClick={fetchFiles}>Recargar</Button>
         </div>
       ) : (
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeadCell>Product name</TableHeadCell>
-              <TableHeadCell>Color</TableHeadCell>
-              <TableHeadCell>Category</TableHeadCell>
-              <TableHeadCell>Price</TableHeadCell>
+              <TableHeadCell>Nombre</TableHeadCell>
+              <TableHeadCell>Tipo</TableHeadCell>
+              <TableHeadCell>Tamaño</TableHeadCell>
+              <TableHeadCell>Última modificación</TableHeadCell>
               <TableHeadCell>
                 <span className="sr-only">Edit</span>
               </TableHeadCell>

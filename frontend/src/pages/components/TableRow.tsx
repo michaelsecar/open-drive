@@ -13,7 +13,13 @@ interface CustomTableRowProps {
 
 export default function CustomTableRow({ file }: CustomTableRowProps) {
   const handleDownload = () => {
-    console.log("descargando");
+    const url = `http://localhost:3000/download/${file.name}`;
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -24,7 +30,9 @@ export default function CustomTableRow({ file }: CustomTableRowProps) {
       <TableCell>{file.type}</TableCell>
       <TableCell>{file.size}</TableCell>
       <TableCell>{file.uploadDate}</TableCell>
-      <Button onClick={handleDownload}>Descargar {file.name}</Button>
+      <TableCell>
+        <Button onClick={handleDownload}>Descargar</Button>
+      </TableCell>
     </TableRow>
   );
 }
