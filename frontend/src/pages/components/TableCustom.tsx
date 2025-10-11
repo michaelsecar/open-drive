@@ -1,78 +1,54 @@
 import {
+  Button,
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
+import { useEffect, useState } from "react";
+import type { FileType } from "./TableRow";
+import CustomTableRow from "./TableRow";
 
 export default function TableCustom() {
+  const [files, setFiles] = useState<FileType[]>([]);
+
+  const fetchFiles = async () => {
+    const response = await fetch("http://localhost:3000/list");
+    const data = await response.json();
+    setFiles(data);
+  };
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
   return (
     <div className="overflow-x-auto">
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableHeadCell>Product name</TableHeadCell>
-            <TableHeadCell>Color</TableHeadCell>
-            <TableHeadCell>Category</TableHeadCell>
-            <TableHeadCell>Price</TableHeadCell>
-            <TableHeadCell>
-              <span className="sr-only">Edit</span>
-            </TableHeadCell>
-          </TableRow>
-        </TableHead>
-        <TableBody className="divide-y">
-          <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              Apple MacBook Pro 17"
-            </TableCell>
-            <TableCell>Sliver</TableCell>
-            <TableCell>Laptop</TableCell>
-            <TableCell>$2999</TableCell>
-            <TableCell>
-              <a
-                href="#"
-                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-              >
-                Edit
-              </a>
-            </TableCell>
-          </TableRow>
-          <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              Microsoft Surface Pro
-            </TableCell>
-            <TableCell>White</TableCell>
-            <TableCell>Laptop PC</TableCell>
-            <TableCell>$1999</TableCell>
-            <TableCell>
-              <a
-                href="#"
-                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-              >
-                Edit
-              </a>
-            </TableCell>
-          </TableRow>
-          <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              Magic Mouse 2
-            </TableCell>
-            <TableCell>Black</TableCell>
-            <TableCell>Accessories</TableCell>
-            <TableCell>$99</TableCell>
-            <TableCell>
-              <a
-                href="#"
-                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-              >
-                Edit
-              </a>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      {files.length == 0 ? (
+        <div className="text-gray-300 font-light">
+          No se han encontrado archivos en el sistema
+          <Button onClick={fetchFiles}>Recargar</Button>
+        </div>
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableHeadCell>Product name</TableHeadCell>
+              <TableHeadCell>Color</TableHeadCell>
+              <TableHeadCell>Category</TableHeadCell>
+              <TableHeadCell>Price</TableHeadCell>
+              <TableHeadCell>
+                <span className="sr-only">Edit</span>
+              </TableHeadCell>
+            </TableRow>
+          </TableHead>
+          <TableBody className="divide-y">
+            {files.map((file) => {
+              return <CustomTableRow key={file.name} file={file} />;
+            })}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 }
