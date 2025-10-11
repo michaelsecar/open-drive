@@ -2,9 +2,10 @@
 import express from 'express'
 import multer from 'multer'
 import { getFiles, getFile } from './api/os_service.js'
+import cors from 'cors'
 
 const app = express()
-
+app.use(cors())
 app.use(express.static('public'))
 
 const storage = multer.diskStorage({
