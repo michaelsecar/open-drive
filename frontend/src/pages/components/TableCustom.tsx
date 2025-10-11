@@ -16,7 +16,9 @@ export default function TableCustom() {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
 
   const fetchFiles = async () => {
-    const response = await fetch("http://localhost:3000/list");
+    const response = await fetch(
+      `http://${import.meta.env.VITE_BACKEND_HOST}/list`
+    );
     const data = await response.json();
     setFiles(data);
   };
@@ -27,7 +29,7 @@ export default function TableCustom() {
     }
     const formData = new FormData();
     formData.append("file", uploadFile!);
-    fetch("http://localhost:3000/upload", {
+    fetch(`http://${import.meta.env.VITE_BACKEND_HOST}/upload`, {
       method: "POST",
       body: formData,
     })

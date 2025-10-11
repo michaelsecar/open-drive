@@ -13,7 +13,9 @@ interface CustomTableRowProps {
 
 export default function CustomTableRow({ file }: CustomTableRowProps) {
   const handleDownload = () => {
-    const url = `http://localhost:3000/download/${file.name}`;
+    const url = `http://${import.meta.env.VITE_BACKEND_HOST}/download/${
+      file.name
+    }`;
     const link = document.createElement("a");
     link.href = url;
     link.download = file.name;
