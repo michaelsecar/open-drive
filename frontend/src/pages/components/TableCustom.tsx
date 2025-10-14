@@ -26,20 +26,24 @@ export default function TableCustom() {
   const uploadFileToServer = async () => {
     if (!uploadFile) {
       alert("Seleccione un archivo");
+      throw new Error("No se ha seleccionado un archivo");
     }
     const formData = new FormData();
     formData.append("file", uploadFile!);
-    fetch(`http://${import.meta.env.VITE_BACKEND_HOST}/upload`, {
-      method: "POST",
-      body: formData,
-    })
-      .then(() => {
-        alert("Archivo subido correctamente");
-        fetchFiles();
-      })
-      .catch((error) => {
-        alert(error);
-      });
+    const response = await fetch(
+      `http://${import.meta.env.VITE_BACKEND_HOST}/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const data = await response.json();
+    if (data == "ok") {
+      alert("Archivo subido correctamente");
+      fetchFiles();
+    } else {
+      alert("No se ha podido subir el archivo");
+    }
   };
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
