@@ -34,6 +34,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     res.send('ok')
   }
   else{
+    res.status(400)
     res.send('No se ha podido subir el archivo')
   }
 })
