@@ -41,6 +41,7 @@ export default function TableCustom() {
     if (data == "ok") {
       alert("Archivo subido correctamente");
       fetchFiles();
+      setUploadFile(null);
     } else {
       alert("No se ha podido subir el archivo");
     }
@@ -62,7 +63,9 @@ export default function TableCustom() {
     <div className="overflow-x-auto">
       <div className="flex gap-5 pb-5">
         <FileInput accept="*" onChange={handleUpload} />
-        <Button onClick={uploadFileToServer}>Subir</Button>
+        <Button disabled={!uploadFile} onClick={uploadFileToServer}>
+          Subir
+        </Button>
         <Button onClick={fetchFiles}>Actualizar</Button>
       </div>
 
